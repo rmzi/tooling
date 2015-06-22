@@ -1,3 +1,8 @@
-## Working with Packer
+## Tools To Play With
 
-Messing around with Packer.
+ * <b>Packer</b>
+ * <b>Docker</b>
+
+MIT LICENSE NOT HERE, 'cause nah. 
+
+© 2015 ©
