@@ -1,7 +1,7 @@
 {
   "variables": {
-    "aws_access_key": "",
-    "aws_secret_key": ""
+    "aws_access_key": "AKIAJOQL4PJ5IS32UFGA",
+    "aws_secret_key": "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"
   },
   "builders": [{
     "type": "amazon-ebs",
@@ -12,5 +12,14 @@
     "instance_type": "t2.micro",
     "ssh_username": "ubuntu",
     "ami_name": "packer-example {{timestamp}}"
-  }]
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "sudo apt-get update",
+      "sudo apt-get install -y redis-server"
+    ]
+  }],
+  "post-processors": ["vagrant"]
 }
