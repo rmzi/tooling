@@ -1,0 +1,73 @@
+{
+	"variables": {
+		"version": "0.1.0",
+		"iso_url": "dmg/OSX_InstallESD_10.10.3_14D136.dmg",
+		"iso_checksum": "41c1fb9bc1488a1fc71f474dd20eedf8",
+		"ssh_username": "vagrant",
+		"ssh_password": "vagrant",
+		"install_xcode_cli_tools": "true",
+    	"update": "true",
+    	"install_vagrant_keys": true
+	},
+	"builders": [{
+		"vm_name": "osx1010-desktop",
+		"type": "vmware-iso",
+		"guest_os_type": "darwin14-64",
+		"iso_url": "{{ user `iso_url`}}",
+		"iso_checksum": "{{ user `iso_checksum`}}",
+		"iso_checksum_type": "md5",
+		"ssh_username": "{{ user `ssh_username`}}",
+		"ssh_password": "{{ user `ssh_password`}}",
+		"ssh_wait_timeout": "10000s",
+		"ssh_port": 22,
+		"tools_upload_flavor": "darwin",
+		"boot_wait": "2s",
+		"disk_size": 20480,
+		"shutdown_command": "echo '{{ user `ssh_username` }}'|sudo -S shutdown -h now",
+	    "skip_compaction": true,
+	    "vmx_data": {
+	      "cpuid.coresPerSocket": "1",
+	      "memsize": "2048",
+	      "numvcpus": "1",
+	      "firmware": "efi",
+	      "keyboardAndMouseProfile": "macProfile",
+	      "smc.present": "TRUE",
+	      "hpet0.present": "TRUE",
+	      "ich7m.present": "TRUE",
+	      "ehci.present": "TRUE",
+	      "usb.present": "TRUE"
+	    }
+	}],
+	"provisioners": [
+		{
+			"type": "file",
+			"source": "script/support/set_kcpassword.py",
+			"destination": "/private/tmp/set_kcpassword.py"
+		},
+		{
+	      "type": "shell",
+	      "environment_vars": [
+	        "UPDATE={{user `update`}}",
+	        "INSTALL_XCODE_CLI_TOOLS={{user `install_xcode_cli_tools`}}",
+	        "INSTALL_VAGRANT_KEYS={{user `install_vagrant_keys`}}",
+	        "SSH_USERNAME={{ user `ssh_username` }}",
+	        "SSH_PASSWORD={{ user `ssh_password` }}"
+	      ],
+	      "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E -S bash '{{ .Path }}'",
+	      "scripts": [
+	        "script/vagrant.sh",
+	        "script/update.sh",
+	        "script/xcode-cli-tools.sh",
+	        "script/vmware.sh",
+	        "script/add-network-interface-detection.sh",
+	        "script/minimize.sh"
+	      ]
+	    }
+	],
+	"post-processors": [{
+		"type": "vagrant",
+		"keep_input_artifact": false,
+		"vagrantfile_template": "tpl/vagrantfile-osx1010-desktop.tpl",
+		"output": "box/{{.Provider}}/osx1010-desktop-{{user `version`}}.box"
+	}]
+}
