@@ -1,0 +1,15 @@
+#!/bin/bash
+
+if [[ $# -lt 1 ]]; then
+	echo "Usage $0 EMAIL..."
+	exit 1
+fi
+
+email=$1
+IFS=@
+set -- $email
+full_name=$1
+IFS=_
+set -- $full_name
+echo "First name $1"
+echo "Last name $2"

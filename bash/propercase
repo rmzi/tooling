@@ -1,0 +1,3 @@
+#!/bin/bash
+
+echo $1 | perl -ane '$index=0; foreach $wrd ( @F ) { if($index != $#F){print ucfirst($wrd)." "; $index++;}else{ print ucfirst($wrd); print $x };}print "\n" ;'
