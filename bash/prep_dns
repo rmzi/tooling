@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# Check for sudo access
+if ! sudo -n /usr/bin/true 2>/dev/null; then
+  echo "[$ME]: Boxen requires admin rights to install software, so we need your password."
+  sudo /usr/bin/true
+fi
+
+dns_string=""
+iters=0
+
+while read -r line ; do
+	if [[ "${iters}" -ne 0 ]]; then
+		dns_string="${dns_string} ${line}"
+	else
+		dns_string="${line}"
+	fi
+	((iters++))
+done < <(cat /etc/resolv.conf | grep "nameserver" | egrep -o '[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+')
+
+echo "${dns_string}"

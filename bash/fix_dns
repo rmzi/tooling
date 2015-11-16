@@ -1,0 +1,2 @@
+#!/bin/bash
+sudo networksetup -setdnsservers vpn.mdl.zone `cat /etc/resolv.conf | grep "nameserver" | egrep -o '[0-9]+[.][0-9]+[.][0-9]+[.][0-9]+'`
